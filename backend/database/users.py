@@ -54,7 +54,7 @@ async def get_or_create_from_session(
     Get or create a user based on auth info in their session
     """
     created = False
-    now = datetime.now(timezone.utc)
+    now = datetime.now()
     try:
         full_session = FullSession(**session)
     except ValidationError:

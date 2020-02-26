@@ -30,7 +30,7 @@ from backend.utils.spotify import (
 )
 
 
-UPDATE_THRESHOLD = datetime.now(timezone.utc)
+UPDATE_THRESHOLD = datetime.now()
 
 
 async def _update_user(user: User) -> None:
@@ -38,7 +38,7 @@ async def _update_user(user: User) -> None:
     Update a single user
     """
     global UPDATE_THRESHOLD  # pylint:disable=global-statement
-    update_threshold_delta = UPDATE_THRESHOLD - datetime.now(timezone.utc)
+    update_threshold_delta = UPDATE_THRESHOLD - datetime.now()
     if update_threshold_delta.total_seconds() > 0:
         LOGGER.debug(
             "Sleeping update thread for %s for %ss",
@@ -48,9 +48,7 @@ async def _update_user(user: User) -> None:
         await asyncio.sleep(update_threshold_delta.total_seconds())
 
     # Handle Spotify token refreshes
-    spotify_token_expired = user.spotifyExpiresAt <= datetime.now(
-        timezone.utc
-    ) - timedelta(minutes=5)
+    spotify_token_expired = user.spotifyExpiresAt <= datetime.now() - timedelta(minutes=5)
     if spotify_token_expired and not user.spotifyRefreshToken:
         LOGGER.warning(
             "Deleting user %s as their Spotify token is expired and no "
@@ -81,7 +79,7 @@ async def _update_user(user: User) -> None:
                 err,
             )
         else:
-            UPDATE_THRESHOLD = datetime.now(timezone.utc) + timedelta(
+            UPDATE_THRESHOLD = datetime.now() + timedelta(
                 seconds=err.retry_after
             )
             LOGGER.warning(
@@ -129,7 +127,7 @@ async def _update_spotify_tokens(user: User) -> bool:
         spotifyExpiresAt=calc_spotify_expiry(exchange_data.expires_in),
         spotifyAccessToken=exchange_data.access_token,
         spotifyRefreshToken=exchange_data.refresh_token or "",
-        updatedAt=datetime.now(timezone.utc),
+        updatedAt=datetime.now(),
     )
     return True
 
@@ -151,7 +149,7 @@ async def _set_user_status(
         return False
     await user.update(
         statusSetLastTime=status_set_last_time,
-        updatedAt=datetime.now(timezone.utc),
+        updatedAt=datetime.now(),
     )
     return True
 

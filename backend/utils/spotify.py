@@ -161,4 +161,4 @@ def calc_spotify_expiry(expires_in: int) -> datetime:
     """
     Spotify expiry integer to a datetime
     """
-    return datetime.now(timezone.utc) + timedelta(seconds=expires_in)
+    return datetime.now() + timedelta(seconds=expires_in)
